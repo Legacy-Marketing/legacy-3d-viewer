@@ -96,6 +96,12 @@
       display: none; /* hidden until a model loads */
       background: #000;
     }
+
+    #status {
+      font-size: 0.8rem;
+      color: #999;
+      margin-left: 20px;
+    }
   </style>
 </head>
 
@@ -112,9 +118,10 @@
         <button onclick="setCamera('0deg 90deg 80m')">Top</button>
       </div>
       <div class="instructions">
-        This viewer auto-loads the default model, or you can drag and drop a .glb / .gltf file onto the window.
+        This viewer auto-loads the default model from the server, or you can drag and drop a .glb / .gltf file onto the window.
       </div>
     </div>
+    <div id="status">Status: loading default model…</div>
   </header>
 
   <div id="dropzone">
@@ -137,12 +144,11 @@
   <script>
     const dropzone = document.getElementById('dropzone');
     const viewer = document.getElementById('viewer');
+    const status = document.getElementById('status');
 
     // Camera presets
     function setCamera(orbit) {
-      if (viewer) {
-        viewer.setAttribute('camera-orbit', orbit);
-      }
+      if (viewer) viewer.setAttribute('camera-orbit', orbit);
     }
     window.setCamera = setCamera; // expose for HTML buttons
 
@@ -168,25 +174,30 @@
       if (file) {
         const url = URL.createObjectURL(file);
         viewer.src = url;
+        if (status) status.textContent = 'Status: loading dropped model…';
       }
     }
 
-    ['dragenter', 'dragover'].forEach(evt => {
-      dropzone.addEventListener(evt, showHover);
-    });
-
-    ['dragleave', 'drop'].forEach(evt => {
-      dropzone.addEventListener(evt, hideHover);
-    });
-
-    dropzone.addEventListener('drop', handleDrop);
+    if (dropzone) {
+      ['dragenter', 'dragover'].forEach(evt =>
+        dropzone.addEventListener(evt, showHover)
+      );
+      ['dragleave', 'drop'].forEach(evt =>
+        dropzone.addEventListener(evt, hideHover)
+      );
+      dropzone.addEventListener('drop', handleDrop);
+    }
 
     // Show the viewer once the model is loaded
     viewer.addEventListener('load', () => {
-      if (dropzone) {
-        dropzone.style.display = 'none';
-      }
+      if (dropzone) dropzone.style.display = 'none';
       viewer.style.display = 'block';
+      if (status) status.textContent = 'Status: model loaded.';
+    });
+
+    // If there’s an error loading the model, show a message
+    viewer.addEventListener('error', () => {
+      if (status) status.textContent = 'Status: error loading model. Check filename or try drag-and-drop.';
     });
   </script>
 </body>
