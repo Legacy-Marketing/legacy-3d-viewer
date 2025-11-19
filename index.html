@@ -112,7 +112,7 @@
         <button onclick="setCamera('0deg 90deg 80m')">Top</button>
       </div>
       <div class="instructions">
-        This viewer can auto-load a model from Dropbox, or you can drag and drop a .glb / .gltf file onto the window.
+        This viewer auto-loads the default model, or you can drag and drop a .glb / .gltf file onto the window.
       </div>
     </div>
   </header>
@@ -122,6 +122,7 @@
     (or wait for the default model to load)
   </div>
 
+  <!-- Auto-loads Boca-Project-v5-2.glb from this repo -->
   <model-viewer id="viewer"
     camera-controls
     auto-rotate
@@ -134,20 +135,10 @@
   </model-viewer>
 
   <script>
-    // 1) Dropbox model URL
-    // Replace this with your own ?raw=1 link from Dropbox when you want a different default model.
-    const DROPBOX_MODEL_URL =
-      'https://www.dropbox.com/scl/fi/dpiri7nr5so5yhr5oiglf/Boca-Project-v5-2.glb?rlkey=63f83hvyuadpdpexs09hv1mp4&st=xzz1g6wj&raw=1';
-
     const dropzone = document.getElementById('dropzone');
     const viewer = document.getElementById('viewer');
 
-    // 2) Auto-load the Dropbox model if we have a URL
-    if (DROPBOX_MODEL_URL && viewer) {
-      viewer.src = DROPBOX_MODEL_URL;
-    }
-
-    // 3) Camera presets
+    // Camera presets
     function setCamera(orbit) {
       if (viewer) {
         viewer.setAttribute('camera-orbit', orbit);
@@ -155,7 +146,7 @@
     }
     window.setCamera = setCamera; // expose for HTML buttons
 
-    // 4) Drag & drop support
+    // Drag & drop support
     function showHover(e) {
       e.preventDefault();
       e.stopPropagation();
@@ -190,7 +181,7 @@
 
     dropzone.addEventListener('drop', handleDrop);
 
-    // 5) Show the viewer once the model is loaded
+    // Show the viewer once the model is loaded
     viewer.addEventListener('load', () => {
       if (dropzone) {
         dropzone.style.display = 'none';
