@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Legacy 3D Model Viewer – Deep Zoom (GitHub Version)</title>
+  <title>Legacy 3D Model Viewer – Clean Version</title>
 
   <!-- Model Viewer library -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -19,7 +19,6 @@
       color: #fff;
     }
 
-    /* HEADER */
     header {
       padding: 12px 20px;
       border-bottom: 1px solid #333;
@@ -36,7 +35,7 @@
     .header-text {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
     .viewer-title {
@@ -45,31 +44,6 @@
       color: #fff;
     }
 
-    /* CAMERA PRESET BUTTONS */
-    .preset-buttons {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 4px;
-    }
-
-    .preset-buttons button {
-      background: #f1c40f;
-      color: #000;
-      border: none;
-      padding: 5px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      font-weight: 600;
-      transition: background 0.2s;
-    }
-
-    .preset-buttons button:hover {
-      background: #d4ac0d;
-    }
-
-    /* DROP ZONE */
     #dropzone {
       flex: 1;
       display: flex;
@@ -91,7 +65,6 @@
       color: #f1c40f;
     }
 
-    /* MODEL VIEWER */
     model-viewer {
       flex: 1;
       width: 100%;
@@ -101,7 +74,7 @@
     }
 
     .instructions {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: #ccc;
     }
   </style>
@@ -112,21 +85,8 @@
   <header>
     <img src="Legacy-Primary-Logo-2.png" alt="Legacy Building Solutions Logo" />
     <div class="header-text">
-      <div class="viewer-title">Legacy Building Solutions — 3D Model Viewer (Deep Zoom)</div>
-
-      <div class="preset-buttons">
-        <button onclick="setCamera('0deg 75deg 150m')">Front</button>
-        <button onclick="setCamera('90deg 75deg 150m')">Side</button>
-        <button onclick="setCamera('45deg 60deg 200m')">Isometric</button>
-        <button onclick="setCamera('0deg 90deg 120m')">Top</button>
-        <button onclick="setCamera('0deg 80deg 30m')">Closer Front</button>
-        <button onclick="setCamera('180deg 80deg 30m')">Closer Back</button>
-      </div>
-
-      <div class="instructions">
-        Drag and drop a .glb / .gltf anywhere in this window to load it.
-        Use mouse scroll to zoom (deep zoom enabled), and click–drag to orbit.
-      </div>
+      <div class="viewer-title">Legacy Building Solutions — 3D Model Viewer</div>
+      <div class="instructions">Drag & drop a .glb / .gltf file to load the model.</div>
     </div>
   </header>
 
@@ -153,30 +113,18 @@
     const dropzone = document.getElementById('dropzone');
     const viewer = document.getElementById('viewer');
 
-    // Camera presets
-    function setCamera(orbit) {
-      if (viewer) {
-        viewer.setAttribute('camera-orbit', orbit);
-      }
-    }
-    window.setCamera = setCamera;
-
-    // Drag & drop handling
     function showHover(e) {
       e.preventDefault();
-      e.stopPropagation();
       dropzone.classList.add('hover');
     }
 
     function hideHover(e) {
       e.preventDefault();
-      e.stopPropagation();
       dropzone.classList.remove('hover');
     }
 
     function handleDrop(e) {
       e.preventDefault();
-      e.stopPropagation();
       dropzone.classList.remove('hover');
 
       const file = e.dataTransfer.files[0];
