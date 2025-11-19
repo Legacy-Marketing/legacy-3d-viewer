@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Legacy 3D Model Viewer</title>
+  <title>Legacy 3D Model Viewer – Deep Zoom</title>
 
   <!-- Model Viewer library -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
@@ -19,13 +19,11 @@
       color: #fff;
     }
 
+    /* HEADER */
     header {
-      padding: 10px 20px;
-      font-size: 1.2rem;
-      font-weight: bold;
+      padding: 12px 20px;
       border-bottom: 1px solid #333;
       background: #000;
-      color: #fff;
       display: flex;
       align-items: center;
       gap: 20px;
@@ -41,84 +39,99 @@
       gap: 6px;
     }
 
+    .viewer-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    /* CAMERA PRESET BUTTONS */
     .preset-buttons {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      font-size: 0.9rem;
-      font-weight: normal;
+      margin-top: 4px;
     }
 
     .preset-buttons button {
       background: #f1c40f;
       color: #000;
       border: none;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 0.85rem;
+      font-weight: 600;
+      transition: background 0.2s;
     }
 
     .preset-buttons button:hover {
       background: #d4ac0d;
     }
 
-    .instructions {
-      font-size: 0.8rem;
-      color: #ccc;
-    }
-
+    /* DROP ZONE */
     #dropzone {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 2px dashed #444;
-      border-radius: 10px;
+      border: 2px dashed #555;
+      border-radius: 12px;
       margin: 20px;
-      color: #aaa;
+      color: #ddd;
       font-size: 1.1rem;
-      transition: background 0.2s, border-color 0.2s, color 0.2s;
       text-align: center;
       padding: 20px;
+      transition: 0.25s;
     }
 
     #dropzone.hover {
-      background: #111;
+      background: rgba(241, 196, 15, 0.15);
       border-color: #f1c40f;
       color: #f1c40f;
     }
 
+    /* MODEL VIEWER */
     model-viewer {
       flex: 1;
       width: 100%;
       height: 100%;
-      display: none; /* hidden until a model loads */
+      display: none; /* revealed when model loads */
       background: #000;
+    }
+
+    .instructions {
+      font-size: 0.8rem;
+      color: #ccc;
     }
   </style>
 </head>
 
 <body>
+
   <header>
-    <img src="Legacy-Primary-Logo-2.png" alt="Legacy Building Solutions" />
+    <img src="Legacy-Primary-Logo-2.png" alt="Legacy Building Solutions Logo" />
     <div class="header-text">
-      <div>Legacy Building Solutions — 3D Model Viewer</div>
+      <div class="viewer-title">Legacy Building Solutions — 3D Model Viewer</div>
+
       <div class="preset-buttons">
-        <button onclick="setCamera('0deg 75deg 100m')">Front</button>
-        <button onclick="setCamera('90deg 75deg 100m')">Side</button>
-        <button onclick="setCamera('45deg 60deg 120m')">Isometric</button>
-        <button onclick="setCamera('0deg 90deg 80m')">Top</button>
+        <button onclick="setCamera('0deg 75deg 150m')">Front</button>
+        <button onclick="setCamera('90deg 75deg 150m')">Side</button>
+        <button onclick="setCamera('45deg 60deg 200m')">Isometric</button>
+        <button onclick="setCamera('0deg 90deg 120m')">Top</button>
+        <button onclick="setCamera('0deg 80deg 30m')">Closer Front</button>
+        <button onclick="setCamera('180deg 80deg 30m')">Closer Back</button>
       </div>
+
       <div class="instructions">
-        Drag and drop a .glb / .gltf file anywhere in this window to view it.
+        Drag and drop a .glb / .gltf anywhere in this window to load it. Use mouse scroll to zoom, click-drag to orbit. Deep zoom is enabled so you can get very close.
       </div>
     </div>
   </header>
 
   <div id="dropzone">
-    Drag &amp; drop your .glb / .gltf file here<br />
-    (the model will appear once it finishes loading)
+    Drag &amp; Drop your .glb / .gltf file here<br/>
+    <span style="font-size:0.85rem; color:#aaa;">(your model will replace this screen)</span>
   </div>
 
   <model-viewer id="viewer"
@@ -128,6 +141,10 @@
     exposure="1"
     shadow-intensity="1"
     min-field-of-view="5deg"
+    min-camera-orbit="auto auto 0.01m"
+    max-camera-orbit="auto auto 2000m"
+    camera-orbit="45deg 70deg 250m"
+    camera-target="0m 0m 0m"
     alt="3D model viewer">
   </model-viewer>
 
@@ -141,7 +158,7 @@
         viewer.setAttribute('camera-orbit', orbit);
       }
     }
-    window.setCamera = setCamera; // expose for buttons
+    window.setCamera = setCamera;
 
     // Drag & drop handling
     function showHover(e) {
@@ -165,6 +182,8 @@
       if (file) {
         const url = URL.createObjectURL(file);
         viewer.src = url;
+        dropzone.style.display = 'none';
+        viewer.style.display = 'block';
       }
     }
 
@@ -180,12 +199,7 @@
 
     dropzone.addEventListener('drop', handleDrop);
     document.body.addEventListener('drop', handleDrop);
-
-    // Show viewer when model loads
-    viewer.addEventListener('load', () => {
-      dropzone.style.display = 'none';
-      viewer.style.display = 'block';
-    });
   </script>
+
 </body>
 </html>
